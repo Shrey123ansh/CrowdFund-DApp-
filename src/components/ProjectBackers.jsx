@@ -1,9 +1,9 @@
-import React from "react";
 import { FaEthereum } from "react-icons/fa";
 import Identicon from "react-identicons";
-// import Moment from "react-moment";
+import Moment from "react-moment";
+import { truncate } from "../store";
 
-const BackProject = () => {
+const ProjectBackers = ({ backers }) => {
   return (
     <div className="flex flex-col justify-center items-start md:w-2/3 px-6 mx-auto">
       <div
@@ -44,50 +44,9 @@ const BackProject = () => {
             </tr>
           </thead>
           <tbody>
-            {Array(5)
-            .fill()
-            .map((backer, i) => (
-                <tr key={i} className="border-b border-gray-200">
-                <td
-                  className="text-sm font-light
-        px-6 py-4 whitespace-nowrap"
-                >
-                  <small className="flex justify-start items-center space-x-2">
-                    <Identicon
-                      className="h-10 w-10 object-contain rounded-full shadow-md"
-                      string={"dfdsfsd....asdfsdf" + i}
-                      size={25}
-                    />
-                    <span>fgdsfgds{i}</span>
-                  </small>
-                </td>
-                <td
-                  className="text-sm font-light
-                    px-6 py-4 whitespace-nowrap"
-                >
-                  <small className="flex justify-start items-center space-x-1">
-                    <FaEthereum />
-                    <span className="text-gray-700 font-medium">
-                       ETH
-                    </span>
-                  </small>
-                </td>
-                <td
-                  className="text-sm font-light
-        px-6 py-4 whitespace-nowrap"
-                >
-                  {false ? "Yes" : "No"}
-                </td>
-                <td
-                  className="text-sm font-light
-        px-6 py-4 whitespace-nowrap"
-                >
-                  {/* <Moment fromNow>{backer.timestamp}</Moment> */}
-                  1234567898765
-                </td>
-              </tr>
+            {backers.map((backer, i) => (
+              <Backer key={i} backer={backer} />
             ))}
-            
           </tbody>
         </table>
       </div>
@@ -95,4 +54,45 @@ const BackProject = () => {
   );
 };
 
-export default BackProject;
+const Backer = ({ backer }) => (
+  <tr className="border-b border-gray-200">
+    <td
+      className="text-sm font-light
+      px-6 py-4 whitespace-nowrap"
+    >
+      <div className="flex justify-start items-center space-x-2">
+        <Identicon
+          className="h-10 w-10 object-contain rounded-full shadow-md"
+          string={backer.owner}
+          size={25}
+        />
+        <span>{truncate(backer.owner, 4, 4, 11)}</span>
+      </div>
+    </td>
+    <td
+      className="text-sm font-light
+                  px-6 py-4 whitespace-nowrap"
+    >
+      <small className="flex justify-start items-center space-x-1">
+        <FaEthereum />
+        <span className="text-gray-700 font-medium">
+          {backer.contribution} ETH
+        </span>
+      </small>
+    </td>
+    <td
+      className="text-sm font-light
+      px-6 py-4 whitespace-nowrap"
+    >
+      {backer.refunded ? "Yes" : "No"}
+    </td>
+    <td
+      className="text-sm font-light
+      px-6 py-4 whitespace-nowrap"
+    >
+      <Moment fromNow>{backer.timestamp}</Moment>
+    </td>
+  </tr>
+);
+
+export default ProjectBackers;

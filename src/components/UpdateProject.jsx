@@ -1,26 +1,63 @@
-import React,{useState} from 'react'
+import react, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useGlobalState, setGlobalState } from "../store";
+import { updateProject } from "../services/blockchain";
+import { toast } from 'react-toastify'
 
-const UpdateProject = () => {
-    const [updateModal] = useGlobalState('updateModal')
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [cost, setCost] = useState("");
-    const [date, setDate] = useState("");
-    const [imageURL, setImageURL] = useState("");
+const UpdateProject = ({project}) => {
+  const [updateModal] = useGlobalState("updateModal");
+  const [title, setTitle] = useState(project?.title);
+  const [description, setDescription] = useState(project?.description);
+  const [date, setDate] = useState(project?.date);
+  const [imageURL, setImageURL] = useState(project?.imageURL);
+
+  const toTimestamp = (dateStr) => {
+    const dateObj = Date.parse(dateStr)
+    return dateObj / 1000
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!title || !description || !date || !imageURL) return
+
+    const params = {
+      id: project?.id,
+      title,
+      description,
+      expiresAt: toTimestamp(date),
+      imageURL,
+    }
+    console.log(params)
+
+    await updateProject(params)
+    toast.success('Project updated successfully, will reflect in 30sec.')
+    onClose()
+  }
+
+  const onClose = () => {
+    setGlobalState('updateModal', 'scale-0')
+    reset()
+  }
+
+  const reset = () => {
+    setTitle('')
+    setDescription('')
+    setImageURL('')
+    setDate('')
+  }
 
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
     items-center justify-center bg-black bg-opacity-50
-    transform transition-transform duration-300 ${updateModal}`} 
+    transform transition-transform duration-300 ${updateModal} `} ///
+      ///Yaad rakna change karna hai
     >
       <div
         className="bg-white shadow-xl shadow-black
         rounded-xl w-11/12 md:w-2/5 h-7/12 p-6"
       >
-        <form onSubmit="" className="flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="flex justify-between items-center">
             <p className="font-semibold">Edit Project</p>
             <button
@@ -35,7 +72,7 @@ const UpdateProject = () => {
           <div className="flex justify-center items-center mt-5">
             <div className="rounded-xl overflow-hidden h-20 w-20">
               <img
-                src={
+                src={ imageURL ||
                   "https://media.wired.com/photos/5926e64caf95806129f50fde/master/pass/AnkiHP.jpg"
                 }
                 alt="project title"
@@ -57,25 +94,6 @@ const UpdateProject = () => {
               placeholder="Title"
               onChange={(e) => setTitle(e.target.value)}
               value={title}
-              required
-            />
-          </div>
-
-          <div
-            className="flex justify-between items-center
-          bg-gray-300 rounded-xl mt-5"
-          >
-            <input
-              className="block w-full bg-transparent
-            border-0 text-sm text-slate-500 focus:outline-none
-            focus:ring-0"
-              type="number"
-              step={0.01}
-              min={0.01}
-              name="cost"
-              placeholder="cost (ETH)"
-              onChange={(e) => setCost(e.target.value)}
-              value={cost}
               required
             />
           </div>
@@ -142,7 +160,7 @@ const UpdateProject = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UpdateProject
+export default UpdateProject;

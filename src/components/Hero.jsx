@@ -1,8 +1,7 @@
-import { setGlobalState } from "../store"
-
-// import { setGlobalState, useGlobalState } from '../store'
+// import { setGlobalState } from "../store"
+import { setGlobalState,useGlobalState } from "../store"
 const Hero = () => {
-//   const [stats] = useGlobalState('stats')
+  const [stats] = useGlobalState('stats')
 
   return (
     <div className="text-center bg-white text-gray-800 py-24 px-6">
@@ -45,7 +44,7 @@ const Hero = () => {
             className="text-lg font-bold text-green-900
             leading-5"
           >
-            {/* {stats?.totalProjects || 0} */}
+            {stats?.totalProjects || 0}
           </span>
           <span>Projects</span>
         </div>
@@ -57,7 +56,7 @@ const Hero = () => {
             className="text-lg font-bold text-green-900
             leading-5"
           >
-            {/* {stats?.totalBacking || 0} */}
+            {stats?.totalBacking || 0}
           </span>
           <span>Backings</span>
         </div>
@@ -69,7 +68,7 @@ const Hero = () => {
             className="text-lg font-bold text-green-900
             leading-5"
           >
-            {/* {stats?.totalDonations || 0} ETH */}
+            {stats?.totalDonations || 0} ETH
           </span>
           <span>Donated</span>
         </div>

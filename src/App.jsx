@@ -7,6 +7,7 @@ import Home from './views/Home'
 import { Route, Routes } from 'react-router-dom'
 import { isWallectConnected } from './services/blockchain'
 import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [loaded, setLoaded] = useState(false)
@@ -27,7 +28,7 @@ const App = () => {
         </Routes>
       ): null }
 
-        {/* <ToastContainer
+        <ToastContainer
         position="bottom-center"
         autoClose={5000}
         hideProgressBar={false}
@@ -38,7 +39,7 @@ const App = () => {
         draggable
         pauseOnHover
         theme="dark"
-      /> */}
+      />
     </div>
   )
 }

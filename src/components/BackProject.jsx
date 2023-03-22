@@ -1,31 +1,37 @@
-import react, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
-import { useGlobalState, setGlobalState } from "../store";
+import { useState } from 'react'
+import { FaTimes } from 'react-icons/fa'
+import { toast } from 'react-toastify'
+import { backProject } from '../services/blockchain'
+import { useGlobalState, setGlobalState } from '../store'
 
-const BackProject = () => {
-  const [backModal] = useGlobalState("backModal");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [cost, setCost] = useState("");
-  const [date, setDate] = useState("");
-  const [imageURL, setImageURL] = useState("");
+const BackProject = ({ project }) => {
+  const [backModal] = useGlobalState('backModal')
+  const [amount, setAmount] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!amount) return
+
+    await backProject(project?.id, amount)
+    toast.success('Project backed successfully, will reflect in 30sec.')
+    setGlobalState('backModal', 'scale-0')
+  }
 
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
     items-center justify-center bg-black bg-opacity-50
-    transform transition-transform duration-300 ${backModal} `} ///
-      ///Yaad rakna change karna hai
+    transform transition-transform duration-300 ${backModal}`}
     >
       <div
         className="bg-white shadow-xl shadow-black
         rounded-xl w-11/12 md:w-2/5 h-7/12 p-6"
       >
-        <form onSubmit="" className="flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="flex justify-between items-center">
-            <p className="font-semibold">#Project Title</p>
+            <p className="font-semibold">{project?.title}</p>
             <button
-              onClick={() => setGlobalState("backModal", "scale-0")}
+              onClick={() => setGlobalState('backModal', 'scale-0')}
               type="button"
               className="border-0 bg-transparent focus:outline-none"
             >
@@ -37,9 +43,10 @@ const BackProject = () => {
             <div className="rounded-xl overflow-hidden h-20 w-20">
               <img
                 src={
-                  "https://media.wired.com/photos/5926e64caf95806129f50fde/master/pass/AnkiHP.jpg"
+                  project?.imageURL ||
+                  'https://media.wired.com/photos/5926e64caf95806129f50fde/master/pass/AnkiHP.jpg'
                 }
-                alt="project title"
+                alt={project?.title}
                 className="h-full w-full object-cover cursor-pointer"
               />
             </div>
@@ -56,14 +63,13 @@ const BackProject = () => {
               type="number"
               step={0.01}
               min={0.01}
-              name="cost"
-              placeholder="cost (ETH)"
-              onChange={(e) => setCost(e.target.value)}
-              value={cost}
+              name="amount"
+              placeholder="Amount (ETH)"
+              onChange={(e) => setAmount(e.target.value)}
+              value={amount}
               required
             />
           </div>
-
 
           <button
             type="submit"
@@ -76,7 +82,7 @@ const BackProject = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BackProject;
+export default BackProject

@@ -1,23 +1,47 @@
-import React from "react";
+import { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import Identicons from "react-identicons";
 import { truncate, daysRemaining } from '../store'
 import { FaEthereum } from 'react-icons/fa'
 
 const Projects = ({projects}) => {
+  const [end, setEnd] = useState(4)
+  const [count] = useState(1)
+  const [collection, setCollection] = useState([])
+
+  const getCollection = () => projects.slice(0, end)
+
+  useEffect(() => {
+    setCollection(getCollection())
+  }, [projects, end])
   return (
     <div className="flex flex-col px-6 mb-7">
       <div className="flex justify-center items-center flex-wrap">
-        {projects
+        {collection
           .map((project, i) => (
             <ProjectCard key={i} id={i} project={project}/>
           ))}
       </div>
+      {projects.length > collection.length ? (
+      <div className="flex justify-center items-center my-5">
+          <button
+            type="button"
+            className="inline-block px-6 py-2.5 bg-green-600
+          text-white font-medium text-xs leading-tight uppercase
+          rounded-full shadow-md hover:bg-green-700"
+            onClick={() => setEnd(end+count)}
+          >
+            Load more
+          </button>
+        </div>
+         ): null}
     </div>
   );
 };
 
-const ProjectCard = ({ project, id }) => (
+const ProjectCard = ({ project, id }) => {
+  const expired = new Date().getTime() > Number(project?.expiresAt + '000')
+  return (
   <div className="rounded-lg shadow-lg bg-white w-64 m-4" id="projects">
     <Link to={"/projects/" + project.id}>
       <img
@@ -37,11 +61,8 @@ const ProjectCard = ({ project, id }) => (
             />
             <small className="text-grey-700">{truncate(project.owner, 4, 4, 11)}</small>
           </div>
-          <small className="text-grey-500">2 days left
-            {/* {new Date.getTime() > Number(project.expiresAt + '000')
-          ? "Expired" : daysRemaining(project.expiresAt)}{" "} 
-          left */}
-          {/* {expired ? 'Expired' : daysRemaining(project.expiresAt) + ' left'} */}
+          <small className="text-grey-500">
+          {expired ? 'Expired' : daysRemaining(project.expiresAt) + ' left'}
           </small>
         </div>
         <div className="w-full bg-gray-300">
@@ -69,11 +90,9 @@ const ProjectCard = ({ project, id }) => (
           {project.backers} Backer{project.backers == 1 ? '' : 's'}
           </small>
           <div>
-              {
-              // project.status == 0 ? (
-              //   <small className="text-red-500">Expired</small>
-              // ) : 
-              project?.status == 0 ? (
+          {expired ? (
+                <small className="text-red-500">Expired</small>
+              ) : project?.status == 0 ? (
                 <small className="text-gray-500">Open</small>
               ) : project?.status == 1 ? (
                 <small className="text-green-500">Accepted</small>
@@ -89,6 +108,7 @@ const ProjectCard = ({ project, id }) => (
       </div>
     </Link>
   </div>
-);
+  )
+};
 
 export default Projects;
